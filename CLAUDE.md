@@ -1,62 +1,66 @@
-# 프로젝트 규칙 (Pokemon TCG Pocket 도감)
+# Pokemon TCG Pocket Project - Claude Guidelines
 
-## 브랜치 전략
+## 프로젝트 개요
+- 서비스명: 포켓몬 TCG Pocket 카드 도감 웹사이트
+- 기술 스택: HTML/CSS/JavaScript (초기), 추후 확장 예정
+- 배포: GitHub Pages
+- 언어: 한국어 (카드 데이터는 한/영 전환 지원)
 
-```
-main
-└── develop
-    ├── feature/xxx   (신규 기능)
-    └── hotfix/xxx    (긴급 버그 수정 → main 직접 머지 후 develop 반영)
-```
+---
 
-- 모든 기능 개발은 `develop`에서 `feature/xxx` 브랜치를 분기해서 작업한다.
-- 기능 완료 시 `develop`에 먼저 머지한 후, 검증이 끝나면 `main`에 머지한다.
-- `main`은 항상 배포 가능한 상태를 유지한다.
+## 핵심 원칙 (반드시 준수)
 
-## 버전 관리
+### 1. 단계적 작업 원칙
+- 한 번에 하나의 작업만 수행
+- 작업 완료 후 반드시 사용자 확인 후 다음 단계 진행
+- 절대 여러 작업을 동시에 진행하지 않음
 
-[Semantic Versioning](https://semver.org/) 규칙을 따른다: **vMAJOR.MINOR.PATCH**
+### 2. 토큰 절약 원칙
+- 모든 명령은 영어로 수행
+- 불필요한 조사/탐색 금지
+- 지정된 API/라이브러리 외 임의 탐색 금지
+- 모르는 부분은 작업 전 사용자에게 먼저 질문
 
-| 구분 | 올리는 경우 |
-|------|------------|
-| MAJOR | 하위 호환이 깨지는 변경 |
-| MINOR | 하위 호환을 유지하는 신규 기능 추가 |
-| PATCH | 하위 호환을 유지하는 버그 수정 |
+### 3. 계획 수립 원칙
+- 큰 작업 시작 전 반드시 계획 수립
+- 계획서(.claude/plans/plan.md) 작성 후 사용자 승인 대기
+- 승인 전 절대 작업 시작 금지
+- 승인 후 .claude/plans/ 3개 문서 생성 후 작업 시작
 
-예시: `v1.0.0` → `v1.1.0` (기능 추가) → `v1.1.1` (버그 수정)
+### 4. Git 원칙
+- 모든 커밋은 .claude/skills/git-skill.md 규칙 준수
+- 작업 완료 후 사용자 확인 후 커밋
+- 절대 임의로 main 브랜치에 직접 커밋 금지
 
-## 커밋 메시지 형식
+### 5. 품질검사 원칙
+- 모든 작업 완료 후 .claude/hooks/post-task.md 체크리스트 실행
+- 오류 발견 시 즉시 수정 후 사용자에게 보고
+- 수정 내용은 .claude/logs/changes.md에 기록
 
-```
-type: 변경 내용을 간결하게 설명
-```
+---
 
-| type | 용도 |
-|------|------|
-| `feat` | 신규 기능 추가 |
-| `fix` | 버그 수정 |
-| `design` | UI/스타일 변경 |
-| `docs` | 문서 작성 및 수정 |
-| `refactor` | 기능 변경 없는 코드 구조 개선 |
-| `chore` | 빌드 설정, 패키지 업데이트 등 기타 작업 |
+## 스킬 파일 자동 매칭 규칙
 
-**예시**
-```
-feat: 카드 타입 필터 기능 추가
-fix: 모달 닫기 버튼 클릭 오류 수정
-design: 카드 호버 애니메이션 개선
-docs: README에 실행 방법 추가
-refactor: 카드 렌더링 함수 분리
-chore: .gitignore 업데이트
-```
+| 키워드 감지 | 활성화 스킬 |
+|------------|------------|
+| UI, 디자인, 화면, 레이아웃, 카드 목록, 검색, 필터, 반응형 | frontend-skill.md |
+| API, fetch, 데이터, TCGdex, 연동, 카드 데이터 | api-skill.md |
+| 커밋, 브랜치, 푸시, 배포, GitHub | git-skill.md |
+| 로그인, 회원가입, 인증, 세션, 토큰 | auth-skill.md |
+| 데이터베이스, DB, 저장, 쿼리, Supabase | database-skill.md |
+| 보안, 취약점, XSS, CSRF, 암호화 | security-skill.md |
 
-## GitHub 커밋 규칙
+---
 
-- **GitHub에 커밋(push)하기 전에 반드시 먼저 확인을 요청한다.**
-- 로컬 커밋은 자유롭게 진행해도 되지만, `git push` 전에는 항상 물어본다.
+## 스킬 파일 경로
+- Frontend: .claude/skills/frontend-skill.md
+- API: .claude/skills/api-skill.md
+- Git: .claude/skills/git-skill.md
+- Auth: .claude/skills/auth-skill.md
+- Database: .claude/skills/database-skill.md
+- Security: .claude/skills/security-skill.md
 
-## 머지 절차
+---
 
-1. 기능 완료 → `feature/xxx`에서 `develop`으로 PR/머지
-2. `develop` 검증 완료 → `develop`에서 `main`으로 PR/머지
-3. `main` 머지 후 버전 태그 부여 (예: `git tag v1.1.0`)
+## 작업 시작 전 체크 (.claude/hooks/pre-task.md 참고)
+## 작업 완료 후 체크 (.claude/hooks/post-task.md 참고)
