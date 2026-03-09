@@ -2,7 +2,34 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:tcgdex.dev)"
+      "WebFetch(domain:tcgdex.dev)",
+      "Bash(ls /c/Users/Home/Desktop/*.PNG /c/Users/Home/Desktop/*.png)",
+      "Bash(curl \"https://api.tcgdex.net/v2/ko/cards/A1-1\")",
+      "Bash(node --version)",
+      "Bash(jq --version)",
+      "Bash(curl -s -L -o grass.png \"https://archives.bulbagarden.net/media/upload/2/2e/Grass-attack.png\")",
+      "Bash(curl -s -L -o fire.png \"https://archives.bulbagarden.net/media/upload/a/ad/Fire-attack.png\")",
+      "Bash(curl -s -L -o water.png \"https://archives.bulbagarden.net/media/upload/1/11/Water-attack.png\")",
+      "Bash(curl -s -L -o lightning.png \"https://archives.bulbagarden.net/media/upload/0/04/Lightning-attack.png\")",
+      "Bash(curl -s -L -o psychic.png \"https://archives.bulbagarden.net/media/upload/e/ef/Psychic-attack.png\")",
+      "Bash(curl -s -L -o fighting.png \"https://archives.bulbagarden.net/media/upload/4/48/Fighting-attack.png\")",
+      "Bash(curl -s -L -o darkness.png \"https://archives.bulbagarden.net/media/upload/a/ab/Darkness-attack.png\")",
+      "Bash(curl -s -L -o metal.png \"https://archives.bulbagarden.net/media/upload/6/64/Metal-attack.png\")",
+      "Bash(curl -s -L -o dragon.png \"https://archives.bulbagarden.net/media/upload/8/8a/Dragon-attack.png\")",
+      "Bash(curl -s -L -o colorless.png \"https://archives.bulbagarden.net/media/upload/1/1d/Colorless-attack.png\")",
+      "Bash(ls -la \"c:/Users/Home/Desktop/pokemon-tcg-pocket-project/assets/types/\"*.png)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File data/convert2.ps1)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File data/add-desc.ps1)",
+      "Bash(python -c \":*)",
+      "Bash(powershell.exe -NoProfile -Command \":*)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File check-ko.ps1)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File check-ko2.ps1)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File check-ids.ps1)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File remap-ko.ps1)",
+      "Bash(where node)",
+      "Bash(powershell -Command \":*)",
+      "Bash(powershell.exe -Command \"Get-Content ''data/ko.json'' -Raw | ConvertFrom-Json | Select-Object -ExpandProperty PSObject | Select-Object -ExpandProperty Properties | Where-Object { $_.Name -match ''^A1-2[2-9]'' } | Select-Object -First 10 -ExpandProperty Name\")",
+      "Bash(powershell.exe -Command \"\\(Get-Content ''data/ko.json'' -Raw | ConvertFrom-Json\\).PSObject.Properties | Where-Object { $_.Name -match ''^A1-2[2-9]'' } | Select-Object -First 10 -ExpandProperty Name\")"
     ]
   }
 }
