@@ -1,889 +1,146 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>포켓몬 TCG 포켓 도감</title>
-  <style>
-    /* ── Reset & Base ───────────────────────────────────────────── */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="포켓몬 TCG Pocket 카드 도감 — 카드 검색, 필터, 출현율 확인" />
+  <title>포켓몬 TCG Pocket 도감</title>
 
-    :root {
-      --fire:    #E8441A;
-      --water:   #3A8FD1;
-      --grass:   #4CA94A;
-      --light:   #D09000;
-      --psychic: #B13EA0;
-      --fight:   #9B4A28;
-      --dark:    #4A3880;
-      --metal:   #7A8FA0;
-      --none:    #9A9A9A;
-      --dragon:  #5A3DC8;
-    }
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&display=swap"
+    rel="stylesheet"
+  />
 
-    body {
-      font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;
-      background: linear-gradient(180deg, #FFE090 0%, #FFF6D8 45%, #E6F2FF 100%);
-      min-height: 100vh;
-      color: #111;
-    }
-
-    /* ── Header ─────────────────────────────────────────────────── */
-    header {
-      background: linear-gradient(135deg, #BB0000 0%, #FF2222 55%, #BB0000 100%);
-      height: 70px;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-inner {
-      max-width: 1280px;
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    /* Pokéball SVG icon */
-    .pokeball {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      border: 3px solid #111;
-      background: white;
-      position: relative;
-      overflow: hidden;
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-    .pb-top    { position:absolute; inset:0 0 50% 0; background:#CC0000; }
-    .pb-line   { position:absolute; top:50%; left:0; right:0; height:3px; background:#111; transform:translateY(-50%); }
-    .pb-center {
-      position:absolute; top:50%; left:50%;
-      width:13px; height:13px;
-      background:white; border:3px solid #111; border-radius:50%;
-      transform:translate(-50%,-50%);
-    }
-
-    .header-text h1 {
-      color: white;
-      font-size: 21px;
-      font-weight: 900;
-      text-shadow: 1px 2px 5px rgba(0,0,0,0.45);
-      letter-spacing: -0.5px;
-    }
-    .header-text p {
-      color: rgba(255,255,255,0.82);
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    /* ── Search Section ─────────────────────────────────────────── */
-    .search-wrap {
-      max-width: 1280px;
-      margin: 22px auto 0;
-      padding: 0 16px;
-    }
-
-    .search-card {
-      background: white;
-      border-radius: 20px;
-      padding: 18px 20px;
-      box-shadow: 0 4px 22px rgba(0,0,0,0.11);
-    }
-
-    .search-row {
-      position: relative;
-      margin-bottom: 14px;
-    }
-
-    #searchInput {
-      width: 100%;
-      height: 48px;
-      padding: 0 16px 0 48px;
-      border: 2px solid #E4E4E4;
-      border-radius: 12px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      color: #222;
-      transition: border-color 0.2s;
-    }
-    #searchInput:focus { border-color: #CC0000; }
-    #searchInput::placeholder { color: #C0C0C0; }
-
-    .search-icon {
-      position: absolute;
-      left: 14px; top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-      pointer-events: none;
-    }
-
-    .type-row { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .type-btn {
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 2.5px solid transparent;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 800;
-      font-family: inherit;
-      background: #555;
-      color: white;
-      transition: transform 0.18s, filter 0.18s, border-color 0.18s, box-shadow 0.18s;
-      letter-spacing: 0.2px;
-    }
-    .type-btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
-    .type-btn.active { border-color: #111; box-shadow: 0 2px 10px rgba(0,0,0,0.28); }
-
-    /* ── Stats Bar ──────────────────────────────────────────────── */
-    .stats-bar {
-      max-width: 1280px;
-      margin: 12px auto 0;
-      padding: 0 20px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #888;
-    }
-
-    /* ── Card Grid ──────────────────────────────────────────────── */
-    .card-grid {
-      max-width: 1280px;
-      margin: 14px auto 0;
-      padding: 0 16px 50px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 18px;
-      overflow: hidden;
-      cursor: pointer;
-      box-shadow: 0 3px 14px rgba(0,0,0,0.10);
-      border: 2.5px solid transparent;
-      transition: transform 0.22s, box-shadow 0.22s;
-      user-select: none;
-    }
-    .card:hover {
-      transform: translateY(-9px) scale(1.025);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
-    }
-
-    .card-art {
-      height: 158px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 78px;
-      position: relative;
-    }
-    .card-art::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 75%, rgba(255,255,255,0.38) 0%, transparent 62%);
-    }
-
-    .card-body { padding: 12px 13px 13px; }
-
-    .card-name {
-      font-size: 15px;
-      font-weight: 900;
-      color: #111;
-      margin-bottom: 8px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .badge {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 11px;
-      border-radius: 10px;
-      color: white;
-    }
-    .badge.dark-label { color: #222 !important; }
-
-    .hp-text { font-size: 13px; font-weight: 800; color: #999; }
-
-    .card-rarity { font-size: 12px; color: #C5C5C5; }
-
-    /* ── Empty State ────────────────────────────────────────────── */
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 90px 20px;
-      color: #BBBBBB;
-    }
-    .empty-icon { font-size: 72px; display: block; margin-bottom: 16px; }
-    .empty p { font-size: 18px; font-weight: 700; }
-
-    /* ── Modal ──────────────────────────────────────────────────── */
-    .overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.70);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      backdrop-filter: blur(7px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.24s;
-    }
-    .overlay.open { opacity: 1; pointer-events: all; }
-
-    .modal {
-      background: white;
-      border-radius: 28px;
-      max-width: 475px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-      transform: scale(0.82) translateY(28px);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .overlay.open .modal { transform: scale(1) translateY(0); }
-
-    .modal-art {
-      height: 230px;
-      border-radius: 28px 28px 0 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 110px;
-      position: relative;
-    }
-    .modal-art::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 75%, rgba(255,255,255,0.42) 0%, transparent 65%);
-      border-radius: 28px 28px 0 0;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 14px; right: 14px;
-      width: 34px; height: 34px;
-      background: rgba(255,255,255,0.93);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: transform 0.18s, background 0.18s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.22);
-    }
-    .modal-close:hover { transform: scale(1.12); background: white; }
-
-    .modal-body { padding: 22px 22px 24px; }
-
-    .modal-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-    .modal-name { font-size: 28px; font-weight: 900; color: #111; line-height: 1.1; }
-    .modal-hp { font-size: 26px; font-weight: 900; color: #CC0000; white-space: nowrap; }
-    .modal-hp small { font-size: 12px; color: #AAA; font-weight: 700; }
-
-    .badges-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-
-    .stage-badge {
-      background: #F2F2F2;
-      color: #666;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 3px 11px;
-      border-radius: 10px;
-      border: 1px solid #E2E2E2;
-    }
-
-    .desc-box {
-      background: #F8F8F8;
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 18px;
-      font-size: 13px;
-      color: #666;
-      line-height: 1.68;
-    }
-
-    .section-label {
-      font-size: 10px;
-      font-weight: 900;
-      color: #C8C8C8;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .attacks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
-
-    .attack {
-      background: #F6F6F6;
-      border-radius: 14px;
-      padding: 13px 14px;
-    }
-    .attack-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .attack-name { font-size: 15px; font-weight: 900; color: #111; }
-    .attack-dmg  { font-size: 22px; font-weight: 900; color: #CC0000; }
-
-    .attack-cost { display: flex; gap: 4px; margin-bottom: 5px; flex-wrap: wrap; }
-
-    .energy {
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 900;
-      color: white;
-      border: 1.5px solid rgba(0,0,0,0.14);
-      flex-shrink: 0;
-    }
-    .energy.dk { color: #222; }
-
-    .attack-desc { font-size: 12px; color: #888; line-height: 1.55; }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .stat-box { background: #F6F6F6; border-radius: 12px; padding: 12px 14px; }
-    .stat-label { font-size: 11px; color: #C0C0C0; font-weight: 700; margin-bottom: 5px; }
-    .stat-val   { font-size: 15px; font-weight: 900; color: #333; }
-
-    .modal-footer {
-      border-top: 1px solid #F0F0F0;
-      padding-top: 12px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: #D0D0D0;
-      font-weight: 600;
-    }
-
-    /* ── Footer ─────────────────────────────────────────────────── */
-    .site-footer {
-      text-align: center;
-      padding: 20px 16px 30px;
-      font-size: 12px;
-      color: #B0B0B0;
-    }
-
-    /* ── Scrollbar ──────────────────────────────────────────────── */
-    .modal::-webkit-scrollbar { width: 4px; }
-    .modal::-webkit-scrollbar-track { background: transparent; }
-    .modal::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
-
-    /* ── Responsive ─────────────────────────────────────────────── */
-    @media (max-width: 600px) {
-      .header-text h1 { font-size: 17px; }
-      .header-text p  { display: none; }
-      .card-grid { grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 12px; }
-      .card-art  { height: 128px; font-size: 60px; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<!-- ── Header ─────────────────────────────────────────────────────── -->
-<header>
-  <div class="header-inner">
-    <div class="pokeball">
-      <div class="pb-top"></div>
-      <div class="pb-line"></div>
-      <div class="pb-center"></div>
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-top">
+      <!-- Logo -->
+      <a class="site-logo" href="/" aria-label="포켓몬 TCG Pocket 도감 홈">
+        <img
+          src="assets/card-back.png"
+          alt="로고"
+          class="site-logo-img"
+        />
+        <span class="site-title">포켓몬 TCG <span>Pocket</span></span>
+      </a>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input
+          type="search"
+          id="search-input"
+          placeholder="카드 이름 검색..."
+          aria-label="카드 이름 검색"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Card count -->
+      <div class="card-count-wrap">
+        <span id="card-count">0</span>장의 카드
+      </div>
     </div>
-    <div class="header-text">
-      <h1>포켓몬 TCG 포켓 도감</h1>
-      <p>카드를 클릭하면 상세 정보를 확인할 수 있습니다</p>
+
+    <!-- Filter rows -->
+    <nav class="header-filters" aria-label="카드 필터">
+
+      <!-- Category -->
+      <div class="filter-row">
+        <span class="filter-label">카테고리</span>
+        <button class="filter-btn" data-filter-category="Pokemon"   aria-label="포켓몬 필터">포켓몬</button>
+        <button class="filter-btn" data-filter-category="Item"      aria-label="아이템 필터">아이템</button>
+        <button class="filter-btn" data-filter-category="Tool"      aria-label="포켓몬의 도구 필터">포켓몬의 도구</button>
+        <button class="filter-btn" data-filter-category="Supporter" aria-label="서포트 필터">서포트</button>
+        <button class="filter-btn" data-filter-category="Stadium"   aria-label="스타디움 필터">스타디움</button>
+      </div>
+
+      <!-- Type -->
+      <div class="filter-row">
+        <span class="filter-label">타입</span>
+        <button class="filter-btn" data-filter-type="Grass"     aria-label="풀 타입 필터"><img class="type-icon-filter" src="assets/types/grass.png" alt="풀"> 풀</button>
+        <button class="filter-btn" data-filter-type="Fire"      aria-label="불꽃 타입 필터"><img class="type-icon-filter" src="assets/types/fire.png" alt="불꽃"> 불꽃</button>
+        <button class="filter-btn" data-filter-type="Water"     aria-label="물 타입 필터"><img class="type-icon-filter" src="assets/types/water.png" alt="물"> 물</button>
+        <button class="filter-btn" data-filter-type="Lightning" aria-label="번개 타입 필터"><img class="type-icon-filter" src="assets/types/lightning.png" alt="번개"> 번개</button>
+        <button class="filter-btn" data-filter-type="Psychic"   aria-label="에스퍼 타입 필터"><img class="type-icon-filter" src="assets/types/psychic.png" alt="에스퍼"> 에스퍼</button>
+        <button class="filter-btn" data-filter-type="Fighting"  aria-label="격투 타입 필터"><img class="type-icon-filter" src="assets/types/fighting.png" alt="격투"> 격투</button>
+        <button class="filter-btn" data-filter-type="Darkness"  aria-label="악 타입 필터"><img class="type-icon-filter" src="assets/types/darkness.png" alt="악"> 악</button>
+        <button class="filter-btn" data-filter-type="Metal"     aria-label="강철 타입 필터"><img class="type-icon-filter" src="assets/types/metal.png" alt="강철"> 강철</button>
+        <button class="filter-btn" data-filter-type="Dragon"    aria-label="드래곤 타입 필터"><img class="type-icon-filter" src="assets/types/dragon.png" alt="드래곤"> 드래곤</button>
+        <button class="filter-btn" data-filter-type="Colorless" aria-label="무색 타입 필터"><img class="type-icon-filter" src="assets/types/colorless.png" alt="무색"> 무색</button>
+      </div>
+
+      <!-- Set -->
+      <div class="filter-row">
+        <span class="filter-label">세트</span>
+        <button class="filter-btn" data-filter-set="A1"     aria-label="A1 세트 필터">A1</button>
+        <button class="filter-btn" data-filter-set="A1a"    aria-label="A1a 세트 필터">A1a</button>
+        <button class="filter-btn" data-filter-set="A2"     aria-label="A2 세트 필터">A2</button>
+        <button class="filter-btn" data-filter-set="A2b"    aria-label="A2b 세트 필터">A2b</button>
+        <button class="filter-btn" data-filter-set="A3"     aria-label="A3 세트 필터">A3</button>
+        <button class="filter-btn" data-filter-set="A3a"    aria-label="A3a 세트 필터">A3a</button>
+        <button class="filter-btn" data-filter-set="A4"     aria-label="A4 세트 필터">A4</button>
+        <button class="filter-btn" data-filter-set="A4b"    aria-label="A4b 세트 필터">A4b</button>
+        <button class="filter-btn" data-filter-set="PROMO-A" aria-label="PROMO-A 세트 필터">PROMO-A</button>
+      </div>
+
+      <!-- Rarity -->
+      <div class="filter-row">
+        <span class="filter-label">희귀도</span>
+        <button class="filter-btn" data-filter-rarity="◇"    aria-label="◇ 희귀도 필터">◇</button>
+        <button class="filter-btn" data-filter-rarity="◇◇"   aria-label="◇◇ 희귀도 필터">◇◇</button>
+        <button class="filter-btn" data-filter-rarity="◇◇◇"  aria-label="◇◇◇ 희귀도 필터">◇◇◇</button>
+        <button class="filter-btn" data-filter-rarity="◇◇◇◇" aria-label="◇◇◇◇ 희귀도 필터">◇◇◇◇</button>
+        <button class="filter-btn" data-filter-rarity="☆"    aria-label="☆ 희귀도 필터">☆</button>
+        <button class="filter-btn" data-filter-rarity="☆☆"   aria-label="☆☆ 희귀도 필터">☆☆</button>
+        <button class="filter-btn" data-filter-rarity="☆☆☆"  aria-label="☆☆☆ 희귀도 필터">☆☆☆</button>
+        <button class="filter-btn" data-filter-rarity="♛"    aria-label="Crown 희귀도 필터">♛ Crown</button>
+      </div>
+
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       MAIN — Card grid
+  ══════════════════════════════════════════ -->
+  <main class="main-content">
+    <div id="load-progress" aria-live="polite" aria-label="로딩 진행률">
+      <p class="progress-text">카드 로딩 중...</p>
+      <div class="progress-track">
+        <div class="progress-bar"></div>
+      </div>
     </div>
+    <div id="card-grid" role="list" aria-label="카드 목록"></div>
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       MODAL
+  ══════════════════════════════════════════ -->
+  <div
+    id="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-label="카드 상세 정보"
+  >
+    <div id="modal-panel"></div>
   </div>
-</header>
 
-<!-- ── Search ─────────────────────────────────────────────────────── -->
-<div class="search-wrap">
-  <div class="search-card">
-    <div class="search-row">
-      <span class="search-icon">🔍</span>
-      <input id="searchInput" type="text" placeholder="카드 이름 또는 타입으로 검색…">
-    </div>
-    <div class="type-row" id="typeRow"></div>
-  </div>
-</div>
+  <!-- ══════════════════════════════════════════
+       SCRIPTS (ES modules)
+  ══════════════════════════════════════════ -->
+  <script type="module">
+    import { init } from './js/cards.js';
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
 
-<!-- ── Stats Bar ──────────────────────────────────────────────────── -->
-<div class="stats-bar" id="statsBar"></div>
-
-<!-- ── Card Grid ─────────────────────────────────────────────────── -->
-<div class="card-grid" id="cardGrid"></div>
-
-<!-- ── Modal ─────────────────────────────────────────────────────── -->
-<div class="overlay" id="overlay">
-  <div class="modal" id="modal"></div>
-</div>
-
-<!-- ── Footer ────────────────────────────────────────────────────── -->
-<footer class="site-footer">
-  이 사이트는 공식 포켓몬 TCG 포켓과 무관한 팬메이드 프로젝트입니다 ·
-  포켓몬은 Nintendo / Creatures Inc. / GAME FREAK의 상표입니다
-</footer>
-
-<script>
-// ═══════════════════════════════════════════════════════════════
-//  TYPE CONFIG
-// ═══════════════════════════════════════════════════════════════
-const TYPE_COLOR = {
-  '불꽃':   '#E8441A',
-  '물':     '#3A8FD1',
-  '풀':     '#4CA94A',
-  '번개':   '#D09000',
-  '초능력': '#B13EA0',
-  '격투':   '#9B4A28',
-  '어둠':   '#4A3880',
-  '강철':   '#7A8FA0',
-  '무색':   '#9A9A9A',
-  '드래곤': '#5A3DC8',
-};
-
-const TYPE_GRADIENT = {
-  '불꽃':   'linear-gradient(140deg,#FF9A5C,#E8441A)',
-  '물':     'linear-gradient(140deg,#88C8F0,#1A6BB0)',
-  '풀':     'linear-gradient(140deg,#90DE68,#2A8028)',
-  '번개':   'linear-gradient(140deg,#FFE070,#D09000)',
-  '초능력': 'linear-gradient(140deg,#F090D0,#7A1A80)',
-  '격투':   'linear-gradient(140deg,#FFCC88,#7A3010)',
-  '어둠':   'linear-gradient(140deg,#9080C0,#200D50)',
-  '강철':   'linear-gradient(140deg,#D0DCE8,#4A6070)',
-  '무색':   'linear-gradient(140deg,#E8E8E8,#9A9A9A)',
-  '드래곤': 'linear-gradient(140deg,#9080F8,#201088)',
-};
-
-// types whose badge text should be dark
-const DARK_TEXT = new Set(['번개', '무색', '강철']);
-
-const ENERGY_ABBR = {
-  '불꽃':'불', '물':'물', '풀':'풀', '번개':'번',
-  '초능력':'초', '격투':'격', '어둠':'어',
-  '강철':'강', '무색':'무', '드래곤':'드',
-};
-
-// ═══════════════════════════════════════════════════════════════
-//  CARD DATA  (20장)
-// ═══════════════════════════════════════════════════════════════
-const CARDS = [
-  {
-    id:1, name:'피카츄', type:'번개', hp:60, stage:'기본', emoji:'⚡',
-    rarity:'◆◆', number:'001',
-    attacks:[
-      { name:'전기 충격',  cost:['번개'],                damage:20, desc:'' },
-      { name:'천둥볼트',   cost:['번개','번개','무색'],   damage:90, desc:'이 포켓몬도 30 피해를 입는다.' },
-    ],
-    weakness:'격투', retreat:1,
-    desc:'볼에 있는 전기 주머니에서 전기를 내보낸다. 전기가 부족하면 꼬리가 축 처진다.',
-  },
-  {
-    id:2, name:'파이리', type:'불꽃', hp:50, stage:'기본', emoji:'🦎',
-    rarity:'◆', number:'002',
-    attacks:[
-      { name:'할퀴기',    cost:['무색'],         damage:10, desc:'' },
-      { name:'화염방사',  cost:['불꽃','불꽃'],   damage:50, desc:'' },
-    ],
-    weakness:'물', retreat:1,
-    desc:'꼬리 끝의 불꽃이 건강의 척도다. 불꽃이 꺼지면 생명도 함께 꺼진다.',
-  },
-  {
-    id:3, name:'꼬부기', type:'물', hp:50, stage:'기본', emoji:'🐢',
-    rarity:'◆', number:'003',
-    attacks:[
-      { name:'물 총',     cost:['물'],         damage:20, desc:'' },
-      { name:'거품 광선', cost:['물','물'],     damage:40, desc:'동전을 던져 앞면이 나오면 상대방 포켓몬을 마비시킨다.' },
-    ],
-    weakness:'번개', retreat:1,
-    desc:'태어난 직후에는 등껍질이 부드럽지만 곧 딱딱하게 굳는다.',
-  },
-  {
-    id:4, name:'이상해씨', type:'풀', hp:60, stage:'기본', emoji:'🌱',
-    rarity:'◆', number:'004',
-    attacks:[
-      { name:'넝쿨채찍', cost:['풀'],           damage:20, desc:'' },
-      { name:'씨뿌리기', cost:['풀','무색'],     damage:40, desc:'다음 턴에 이 포켓몬에게 20 피해를 치료한다.' },
-    ],
-    weakness:'불꽃', retreat:1,
-    desc:'등에 씨앗을 짊어지고 태어난다. 햇빛을 받으면 씨앗에서 이상한 향기가 난다.',
-  },
-  {
-    id:5, name:'리자몽', type:'불꽃', hp:180, stage:'2진화', emoji:'🐉',
-    rarity:'◆◆◆◆', number:'005',
-    attacks:[
-      { name:'화염 발톱', cost:['불꽃','무색'],           damage:60,  desc:'' },
-      { name:'폭풍화염',  cost:['불꽃','불꽃','불꽃'],     damage:200, desc:'이 포켓몬도 50 피해를 입는다.' },
-    ],
-    weakness:'물', retreat:3,
-    desc:'매우 강한 상대에게만 불꽃을 내뿜는다. 약한 상대에게는 싸움을 걸지 않는다.',
-  },
-  {
-    id:6, name:'거북왕', type:'물', hp:180, stage:'2진화', emoji:'🐋',
-    rarity:'◆◆◆◆', number:'006',
-    attacks:[
-      { name:'파도타기',     cost:['물','물'],         damage:60,  desc:'' },
-      { name:'하이드로 펌프', cost:['물','물','물'],    damage:120, desc:'' },
-    ],
-    weakness:'번개', retreat:3,
-    desc:'등껍질에 달린 고압 물 대포로 100미터 앞의 목표물도 정확하게 맞힐 수 있다.',
-  },
-  {
-    id:7, name:'이상해꽃', type:'풀', hp:160, stage:'2진화', emoji:'🌺',
-    rarity:'◆◆◆◆', number:'007',
-    attacks:[
-      { name:'태양의 꽃', cost:['풀','풀'],           damage:60,  desc:'다음 턴에 이 포켓몬에게 30 피해를 치료한다.' },
-      { name:'꽃잎댄스',  cost:['풀','풀','풀'],       damage:120, desc:'' },
-    ],
-    weakness:'불꽃', retreat:3,
-    desc:'만개한 꽃에서 나오는 향기는 주위를 차분하게 만들고 싸움을 멈추게 한다.',
-  },
-  {
-    id:8, name:'뮤츠', type:'초능력', hp:120, stage:'기본', emoji:'🔮',
-    rarity:'★★', number:'008',
-    attacks:[
-      { name:'염동력',      cost:['초능력','무색'],               damage:50,  desc:'' },
-      { name:'사이코브레이크', cost:['초능력','초능력','초능력'],    damage:150, desc:'' },
-    ],
-    weakness:'어둠', retreat:2,
-    desc:'과학 실험으로 탄생한 포켓몬. 세계에서 가장 강한 초능력을 가지고 있다.',
-  },
-  {
-    id:9, name:'잠만보', type:'무색', hp:150, stage:'기본', emoji:'😴',
-    rarity:'◆◆◆', number:'009',
-    attacks:[
-      { name:'하품',         cost:['무색'],                 damage:0,   desc:'상대방 포켓몬을 잠들게 한다.' },
-      { name:'버디버디 펀치', cost:['무색','무색','무색'],    damage:100, desc:'' },
-    ],
-    weakness:'격투', retreat:4,
-    desc:'하루에 18시간 이상 잔다. 식욕이 엄청나서 깨어있을 때는 먹기만 한다.',
-  },
-  {
-    id:10, name:'팬텀', type:'초능력', hp:130, stage:'2진화', emoji:'👻',
-    rarity:'◆◆◆', number:'010',
-    attacks:[
-      { name:'저주',   cost:['초능력'],               damage:0,  desc:'상대방 포켓몬은 매 턴 시작 시 30 피해를 입는다.' },
-      { name:'섀도볼', cost:['초능력','초능력'],        damage:90, desc:'' },
-    ],
-    weakness:'어둠', retreat:1,
-    desc:'어두운 밤에 혀로 핥으면 온몸에 한기가 돌고 넋이 빠져 멍하게 된다.',
-  },
-  {
-    id:11, name:'가디', type:'불꽃', hp:60, stage:'기본', emoji:'🐶',
-    rarity:'◆', number:'011',
-    attacks:[
-      { name:'물기',      cost:['무색'],          damage:20, desc:'' },
-      { name:'불꽃 이빨', cost:['불꽃','무색'],    damage:40, desc:'동전을 던져 앞면이 나오면 상대방 포켓몬에게 화상을 입힌다.' },
-    ],
-    weakness:'물', retreat:1,
-    desc:'매우 충성스러운 포켓몬. 주인에게 위험이 닥치면 불꽃으로 온몸을 감싸 지켜낸다.',
-  },
-  {
-    id:12, name:'라프라스', type:'물', hp:130, stage:'기본', emoji:'🦕',
-    rarity:'◆◆◆', number:'012',
-    attacks:[
-      { name:'노래',   cost:['무색'],             damage:0,  desc:'상대방 포켓몬을 잠들게 한다.' },
-      { name:'눈보라', cost:['물','물','무색'],    damage:80, desc:'' },
-    ],
-    weakness:'번개', retreat:3,
-    desc:'사람이나 포켓몬을 등에 태우고 바다를 건너간다. 노래 부르기를 좋아한다.',
-  },
-  {
-    id:13, name:'이브이', type:'무색', hp:60, stage:'기본', emoji:'🦊',
-    rarity:'◆◆', number:'013',
-    attacks:[
-      { name:'돌진',    cost:['무색'],           damage:20, desc:'' },
-      { name:'꼬리치기', cost:['무색','무색'],    damage:30, desc:'상대방 포켓몬의 다음 공격 피해를 20 줄인다.' },
-    ],
-    weakness:'격투', retreat:1,
-    desc:'유전자가 불규칙하게 배열되어 있어 어떤 환경에도 적응할 수 있는 특이한 포켓몬이다.',
-  },
-  {
-    id:14, name:'망나뇽', type:'무색', hp:160, stage:'2진화', emoji:'🐲',
-    rarity:'◆◆◆◆', number:'014',
-    attacks:[
-      { name:'드래곤 테일', cost:['무색','무색'],                  damage:60,  desc:'' },
-      { name:'하이퍼빔',   cost:['무색','무색','무색','무색'],      damage:150, desc:'다음 턴에 이 포켓몬은 공격할 수 없다.' },
-    ],
-    weakness:'격투', retreat:3,
-    desc:'24시간 안에 세계 일주를 할 수 있다. 폭풍 같은 속도로 날아다닌다.',
-  },
-  {
-    id:15, name:'루카리오', type:'격투', hp:120, stage:'1진화', emoji:'🐺',
-    rarity:'◆◆◆', number:'015',
-    attacks:[
-      { name:'파동권', cost:['격투','무색'],          damage:60,  desc:'' },
-      { name:'파동탄', cost:['격투','격투','무색'],    damage:120, desc:'' },
-    ],
-    weakness:'초능력', retreat:1,
-    desc:'파동을 느끼는 능력이 뛰어나 상대방의 움직임을 미리 읽어낼 수 있다.',
-  },
-  {
-    id:16, name:'뮤', type:'초능력', hp:60, stage:'기본', emoji:'✨',
-    rarity:'★', number:'016',
-    attacks:[
-      { name:'고양이 손', cost:['무색'],              damage:10, desc:'' },
-      { name:'사이킥',   cost:['초능력','초능력'],     damage:60, desc:'상대방에게 붙은 에너지 수만큼 20 피해를 추가한다.' },
-    ],
-    weakness:'어둠', retreat:1,
-    desc:'전 세계의 포켓몬 유전자를 가지고 있다고 한다. 모든 기술을 사용할 수 있다.',
-  },
-  {
-    id:17, name:'토게피', type:'무색', hp:40, stage:'기본', emoji:'🥚',
-    rarity:'◆◆', number:'017',
-    attacks:[
-      { name:'메트로놈', cost:['무색'], damage:0, desc:'상대방 포켓몬의 기술 중 하나를 무작위로 사용한다.' },
-    ],
-    weakness:'격투', retreat:1,
-    desc:'껍데기 속에 행복 에너지를 가득 채우고 조금씩 방출한다.',
-  },
-  {
-    id:18, name:'잉어킹', type:'물', hp:30, stage:'기본', emoji:'🐟',
-    rarity:'◆', number:'018',
-    attacks:[
-      { name:'물 튀기기', cost:['물'], damage:10, desc:'' },
-    ],
-    weakness:'번개', retreat:1,
-    desc:'세상에서 가장 약한 포켓몬이라고 알려져 있다. 하지만 진화하면 이야기가 달라진다.',
-  },
-  {
-    id:19, name:'갸라도스', type:'물', hp:170, stage:'1진화', emoji:'🐍',
-    rarity:'◆◆◆◆', number:'019',
-    attacks:[
-      { name:'으르렁',       cost:['물','무색'],          damage:50,  desc:'' },
-      { name:'하이드로 펌프', cost:['물','물','물'],        damage:130, desc:'' },
-    ],
-    weakness:'번개', retreat:3,
-    desc:'한번 화가 나면 가라앉을 줄 모른다. 마을 하나를 순식간에 불바다로 만들어 버린다.',
-  },
-  {
-    id:20, name:'가브리아스', type:'무색', hp:160, stage:'2진화', emoji:'🦈',
-    rarity:'◆◆◆◆', number:'020',
-    attacks:[
-      { name:'드래곤 크루', cost:['무색','무색'],           damage:50,  desc:'' },
-      { name:'드래곤 러시', cost:['무색','무색','무색'],     damage:130, desc:'' },
-    ],
-    weakness:'격투', retreat:2,
-    desc:'비행 속도가 음속을 초월한다. 사냥할 때는 날개를 접고 먹이에게 돌진한다.',
-  },
-];
-
-// ═══════════════════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════════════════
-const ALL_TYPES = ['전체', ...Object.keys(TYPE_COLOR)];
-let activeType = '전체';
-let query = '';
-
-// ═══════════════════════════════════════════════════════════════
-//  HELPERS
-// ═══════════════════════════════════════════════════════════════
-function badgeHTML(type, extra = '') {
-  const dk = DARK_TEXT.has(type) ? 'dark-label' : '';
-  return `<span class="badge ${dk}" style="background:${TYPE_COLOR[type]}"${extra ? ' '+extra : ''}>${type}</span>`;
-}
-
-function energyHTML(type) {
-  const dk = DARK_TEXT.has(type) ? 'dk' : '';
-  return `<span class="energy ${dk}" style="background:${TYPE_COLOR[type] || '#888'}">${ENERGY_ABBR[type] || '?'}</span>`;
-}
-
-function retreatDots(n) {
-  return n === 0 ? '없음' : '○'.repeat(n);
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  FILTER
-// ═══════════════════════════════════════════════════════════════
-function getFiltered() {
-  const q = query.trim().toLowerCase();
-  return CARDS.filter(c => {
-    const typeOk   = activeType === '전체' || c.type === activeType;
-    const searchOk = !q || c.name.includes(q) || c.type.includes(q);
-    return typeOk && searchOk;
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  RENDER — TYPE ROW
-// ═══════════════════════════════════════════════════════════════
-function renderTypeRow() {
-  document.getElementById('typeRow').innerHTML = ALL_TYPES.map(t => {
-    const active = t === activeType ? 'active' : '';
-    if (t === '전체') {
-      return `<button class="type-btn ${active}" data-type="${t}">${t}</button>`;
-    }
-    const textColor = DARK_TEXT.has(t) ? '#222' : 'white';
-    return `<button class="type-btn ${active}" data-type="${t}"
-      style="background:${TYPE_COLOR[t]};color:${textColor}">${t}</button>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  RENDER — CARD GRID
-// ═══════════════════════════════════════════════════════════════
-function renderCards() {
-  const filtered = getFiltered();
-  document.getElementById('statsBar').textContent = `총 ${filtered.length}장의 카드`;
-
-  const grid = document.getElementById('cardGrid');
-
-  if (!filtered.length) {
-    grid.innerHTML = `
-      <div class="empty">
-        <span class="empty-icon">😢</span>
-        <p>검색 결과가 없습니다</p>
-      </div>`;
-    return;
-  }
-
-  grid.innerHTML = filtered.map(c => `
-    <div class="card" data-id="${c.id}"
-         style="border-color:${TYPE_COLOR[c.type]}50">
-      <div class="card-art" style="background:${TYPE_GRADIENT[c.type]}">${c.emoji}</div>
-      <div class="card-body">
-        <div class="card-name">${c.name}</div>
-        <div class="card-row">
-          ${badgeHTML(c.type)}
-          <span class="hp-text">HP ${c.hp}</span>
-        </div>
-        <div class="card-rarity">${c.rarity} · #${c.number}</div>
-      </div>
-    </div>`).join('');
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  MODAL
-// ═══════════════════════════════════════════════════════════════
-function openModal(id) {
-  const c = CARDS.find(x => x.id === id);
-  if (!c) return;
-
-  document.getElementById('modal').innerHTML = `
-    <div style="position:relative">
-      <button class="modal-close" id="closeBtn">✕</button>
-      <div class="modal-art" style="background:${TYPE_GRADIENT[c.type]}">${c.emoji}</div>
-    </div>
-    <div class="modal-body">
-      <div class="modal-top">
-        <div class="modal-name">${c.name}</div>
-        <div class="modal-hp">${c.hp} <small>HP</small></div>
-      </div>
-      <div class="badges-row">
-        ${badgeHTML(c.type)}
-        <span class="stage-badge">${c.stage}</span>
-      </div>
-      <div class="desc-box">${c.desc}</div>
-
-      <div class="section-label">기술</div>
-      <div class="attacks">
-        ${c.attacks.map(a => `
-          <div class="attack">
-            <div class="attack-top">
-              <span class="attack-name">${a.name}</span>
-              <span class="attack-dmg">${a.damage || '—'}</span>
-            </div>
-            <div class="attack-cost">${a.cost.map(energyHTML).join('')}</div>
-            ${a.desc ? `<div class="attack-desc">${a.desc}</div>` : ''}
-          </div>`).join('')}
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-label">약점</div>
-          <div class="stat-val" style="color:${TYPE_COLOR[c.weakness] || '#888'}">${c.weakness} ×2</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">후퇴 비용</div>
-          <div class="stat-val">${retreatDots(c.retreat)}</div>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <span>${c.rarity}</span>
-        <span>#${c.number}</span>
-      </div>
-    </div>`;
-
-  document.getElementById('overlay').classList.add('open');
-  document.getElementById('closeBtn').addEventListener('click', closeModal);
-}
-
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  EVENT LISTENERS
-// ═══════════════════════════════════════════════════════════════
-document.getElementById('searchInput').addEventListener('input', e => {
-  query = e.target.value;
-  renderCards();
-});
-
-document.getElementById('typeRow').addEventListener('click', e => {
-  const btn = e.target.closest('.type-btn');
-  if (!btn) return;
-  activeType = btn.dataset.type;
-  renderTypeRow();
-  renderCards();
-});
-
-document.getElementById('cardGrid').addEventListener('click', e => {
-  const card = e.target.closest('.card');
-  if (!card) return;
-  openModal(Number(card.dataset.id));
-});
-
-document.getElementById('overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('overlay')) closeModal();
-});
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
-
-// ═══════════════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════════════
-renderTypeRow();
-renderCards();
-</script>
 </body>
 </html>
