@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>이펙트 희귀도별 미리보기</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0c0c12;
+    color: #e8e8f0;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 32px 28px 60px;
+  }
+
+  .section { margin-bottom: 36px; }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1c1c30;
+  }
+
+  .s-rarity { font-size: 16px; letter-spacing: 3px; color: #9090b8; }
+  .s-fx     { font-size: 10px; letter-spacing: 0.8px; color: #3d3d5c; text-transform: uppercase; }
+
+  .row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .card-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .card-scene {
+    position: relative;
+    width: 148px;
+    height: 207px;
+    border-radius: 10px;
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    position: relative;
+    z-index: 1;
+    -webkit-user-drag: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+  }
+
+  .card-sub { font-size: 10px; color: #444466; text-align: center; }
+
+
+  /* ══════════════════════════════════════
+     ☆ — 실버 링
+     ☆☆와 동일한 3레이어 고정 구조, 색상만 실버
+  ══════════════════════════════════════ */
+  .fx-star1 .card-img {
+    animation: ring-silver 3s ease-in-out infinite;
+  }
+  @keyframes ring-silver {
+    0%,100% { box-shadow: 0 0 0 2px rgba(208,218,252,0.78), 0 0 0 5px rgba(185,200,245,0.18), 0 0 18px 6px rgba(185,200,245,0.20), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(232,238,255,0.92), 0 0 0 5px rgba(208,218,252,0.26), 0 0 18px 6px rgba(208,218,252,0.28), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+
+  /* ══════════════════════════════════════
+     ☆☆ — 무지개 링 (기준)
+     3레이어 고정, 색상만 순환
+  ══════════════════════════════════════ */
+  .fx-star2 .card-img {
+    animation: ring-rainbow 3s linear infinite;
+  }
+  @keyframes ring-rainbow {
+    0%   { box-shadow: 0 0 0 2px rgba(255,155,185,0.92), 0 0 0 5px rgba(255,100,155,0.28), 0 0 18px 6px rgba(255,100,155,0.30), 0 10px 30px rgba(0,0,0,0.85); }
+    17%  { box-shadow: 0 0 0 2px rgba(255,205,130,0.92), 0 0 0 5px rgba(255,170,60,0.28),  0 0 18px 6px rgba(255,170,60,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    34%  { box-shadow: 0 0 0 2px rgba(120,225,185,0.92), 0 0 0 5px rgba(60,200,145,0.28),  0 0 18px 6px rgba(60,200,145,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    50%  { box-shadow: 0 0 0 2px rgba(110,205,255,0.92), 0 0 0 5px rgba(60,170,255,0.28),  0 0 18px 6px rgba(60,170,255,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    67%  { box-shadow: 0 0 0 2px rgba(175,135,255,0.92), 0 0 0 5px rgba(140,90,255,0.28),  0 0 18px 6px rgba(140,90,255,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    84%  { box-shadow: 0 0 0 2px rgba(255,160,210,0.92), 0 0 0 5px rgba(255,110,185,0.28), 0 0 18px 6px rgba(255,110,185,0.30), 0 10px 30px rgba(0,0,0,0.85); }
+    100% { box-shadow: 0 0 0 2px rgba(255,155,185,0.92), 0 0 0 5px rgba(255,100,155,0.28), 0 0 18px 6px rgba(255,100,155,0.30), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+
+  /* ══════════════════════════════════════
+     ☆☆☆ — 딥 바이올렛 링
+     ☆☆와 동일한 3레이어 고정 구조, 색상만 다름
+  ══════════════════════════════════════ */
+  .fx-star3 .card-img {
+    animation: ring-star3 3s ease-in-out infinite;
+  }
+  @keyframes ring-star3 {
+    0%,100% { box-shadow: 0 0 0 2px rgba(100,75,220,0.82), 0 0 0 5px rgba(130,100,240,0.20), 0 0 18px 6px rgba(130,100,240,0.22), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(195,175,255,0.92), 0 0 0 5px rgba(160,135,255,0.30), 0 0 18px 6px rgba(195,175,255,0.34), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+
+  /* ══════════════════════════════════════
+     ◇◇◇◇ — 타입별 링 (3레이어 고정, ☆☆와 동일 구조)
+  ══════════════════════════════════════ */
+  .fx-type-grass .card-img     { animation: ring-type-grass     3s ease-in-out infinite; }
+  .fx-type-fire .card-img      { animation: ring-type-fire      3s ease-in-out infinite; }
+  .fx-type-water .card-img     { animation: ring-type-water     3s ease-in-out infinite; }
+  .fx-type-lightning .card-img { animation: ring-type-lightning 3s ease-in-out infinite; }
+  .fx-type-psychic .card-img   { animation: ring-type-psychic   3s ease-in-out infinite; }
+  .fx-type-fighting .card-img  { animation: ring-type-fighting  3s ease-in-out infinite; }
+  .fx-type-dark .card-img      { animation: ring-type-dark      3s ease-in-out infinite; }
+  .fx-type-metal .card-img     { animation: ring-type-metal     3s ease-in-out infinite; }
+  .fx-type-dragon .card-img    { animation: ring-type-dragon    3s ease-in-out infinite; }
+  .fx-type-colorless .card-img { animation: ring-type-colorless 3s ease-in-out infinite; }
+
+  @keyframes ring-type-grass {
+    0%,100% { box-shadow: 0 0 0 2px rgba(88,196,50,0.82),   0 0 0 5px rgba(88,196,50,0.20),   0 0 18px 6px rgba(88,196,50,0.22),   0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(130,230,80,0.92),  0 0 0 5px rgba(88,196,50,0.30),   0 0 18px 6px rgba(130,230,80,0.34),  0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-fire {
+    0%,100% { box-shadow: 0 0 0 2px rgba(232,80,48,0.82),   0 0 0 5px rgba(232,80,48,0.20),   0 0 18px 6px rgba(232,80,48,0.22),   0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(255,120,80,0.92),  0 0 0 5px rgba(232,80,48,0.30),   0 0 18px 6px rgba(255,120,80,0.34),  0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-water {
+    0%,100% { box-shadow: 0 0 0 2px rgba(48,144,224,0.82),  0 0 0 5px rgba(48,144,224,0.20),  0 0 18px 6px rgba(48,144,224,0.22),  0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(90,185,255,0.92),  0 0 0 5px rgba(48,144,224,0.30),  0 0 18px 6px rgba(90,185,255,0.34),  0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-lightning {
+    0%,100% { box-shadow: 0 0 0 2px rgba(240,192,32,0.82),  0 0 0 5px rgba(240,192,32,0.20),  0 0 18px 6px rgba(240,192,32,0.22),  0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(255,225,80,0.92),  0 0 0 5px rgba(240,192,32,0.30),  0 0 18px 6px rgba(255,225,80,0.34),  0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-psychic {
+    0%,100% { box-shadow: 0 0 0 2px rgba(216,56,144,0.82),  0 0 0 5px rgba(216,56,144,0.20),  0 0 18px 6px rgba(216,56,144,0.22),  0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(255,100,190,0.92), 0 0 0 5px rgba(216,56,144,0.30),  0 0 18px 6px rgba(255,100,190,0.34), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-fighting {
+    0%,100% { box-shadow: 0 0 0 2px rgba(200,80,45,0.82),   0 0 0 5px rgba(200,80,45,0.20),   0 0 18px 6px rgba(200,80,45,0.22),   0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(240,115,70,0.92),  0 0 0 5px rgba(200,80,45,0.30),   0 0 18px 6px rgba(240,115,70,0.34),  0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-dark {
+    0%,100% { box-shadow: 0 0 0 2px rgba(110,80,180,0.82),  0 0 0 5px rgba(110,80,180,0.20),  0 0 18px 6px rgba(110,80,180,0.22),  0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(150,120,220,0.92), 0 0 0 5px rgba(110,80,180,0.30),  0 0 18px 6px rgba(150,120,220,0.34), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-metal {
+    0%,100% { box-shadow: 0 0 0 2px rgba(160,170,190,0.78), 0 0 0 5px rgba(160,170,190,0.18), 0 0 18px 6px rgba(160,170,190,0.20), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(205,215,230,0.92), 0 0 0 5px rgba(160,170,190,0.28), 0 0 18px 6px rgba(205,215,230,0.32), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-dragon {
+    0%,100% { box-shadow: 0 0 0 2px rgba(60,100,200,0.82),  0 0 0 5px rgba(60,100,200,0.20),  0 0 18px 6px rgba(60,100,200,0.22),  0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(100,150,240,0.92), 0 0 0 5px rgba(60,100,200,0.30),  0 0 18px 6px rgba(100,150,240,0.34), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+  @keyframes ring-type-colorless {
+    0%,100% { box-shadow: 0 0 0 2px rgba(215,210,195,0.78), 0 0 0 5px rgba(215,210,195,0.16), 0 0 18px 6px rgba(215,210,195,0.18), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(238,235,222,0.92), 0 0 0 5px rgba(215,210,195,0.26), 0 0 18px 6px rgba(238,235,222,0.30), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+
+  /* ══════════════════════════════════════
+     ♛ — 골드 링 글로우 (강조형, 독립 스타일)
+  ══════════════════════════════════════ */
+  .fx-crown .card-img {
+    animation: ring-gold 2.4s ease-in-out infinite;
+  }
+  @keyframes ring-gold {
+    0%,100% {
+      box-shadow:
+        0 0 0 2px rgba(255,200,40,0.88),
+        0 0 16px 5px rgba(210,155,15,0.35),
+        0 10px 30px rgba(0,0,0,0.85);
+    }
+    50% {
+      box-shadow:
+        0 0 0 3px rgba(255,225,90,1.00),
+        0 0 0 6px rgba(230,175,30,0.28),
+        0 0 28px 12px rgba(210,160,20,0.52),
+        0 10px 30px rgba(0,0,0,0.85);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ◇ ~ ◇◇◇ : 이펙트 없음 (확정) -->
+<div class="section">
+  <div class="section-head">
+    <span class="s-rarity">◇ ◇◇ ◇◇◇</span>
+    <span class="s-fx">이펙트 없음 (확정)</span>
+  </div>
+  <div class="row">
+    <div class="card-cell">
+      <div class="card-scene">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/001/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #001 · ◇</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/002/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #002 · ◇◇</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/003/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #003 · ◇◇◇</div>
+    </div>
+  </div>
+</div>
+
+<!-- ◇◇◇◇ : 타입별 링 (시안) -->
+<div class="section">
+  <div class="section-head">
+    <span class="s-rarity">◇◇◇◇</span>
+    <span class="s-fx">타입별 링 (동일 카드로 색상 비교)</span>
+  </div>
+  <div class="row">
+    <div class="card-cell">
+      <div class="card-scene fx-type-grass">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">풀 (Grass)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-fire">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">불꽃 (Fire)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-water">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">물 (Water)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-lightning">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">번개 (Lightning)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-psychic">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">에스퍼 (Psychic)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-fighting">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">격투 (Fighting)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-dark">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">악 (Darkness)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-metal">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">강철 (Metal)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-dragon">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">드래곤 (Dragon)</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-type-colorless">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">무색 (Colorless)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ☆ -->
+<div class="section">
+  <div class="section-head">
+    <span class="s-rarity">☆</span>
+    <span class="s-fx">실버 링</span>
+  </div>
+  <div class="row">
+    <div class="card-cell">
+      <div class="card-scene fx-star1">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/227/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #227 · ☆</div>
+    </div>
+  </div>
+</div>
+
+<!-- ☆☆ -->
+<div class="section">
+  <div class="section-head">
+    <span class="s-rarity">☆☆</span>
+    <span class="s-fx">무지개 링</span>
+  </div>
+  <div class="row">
+    <div class="card-cell">
+      <div class="card-scene fx-star2">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/251/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #251 · ☆☆</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-star2">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/264/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #264 · ☆☆</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-star2">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/277/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #277 · ☆☆</div>
+    </div>
+    <div class="card-cell">
+      <div class="card-scene fx-star2">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A2/197/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A2 #197 · ☆☆</div>
+    </div>
+  </div>
+</div>
+
+<!-- ☆☆☆ -->
+<div class="section">
+  <div class="section-head">
+    <span class="s-rarity">☆☆☆</span>
+    <span class="s-fx">다크/페일시안 링</span>
+  </div>
+  <div class="row">
+    <div class="card-cell">
+      <div class="card-scene fx-star3">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A2/204/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A2 #204 · ☆☆☆</div>
+    </div>
+  </div>
+</div>
+
+<!-- ♛ -->
+<div class="section">
+  <div class="section-head">
+    <span class="s-rarity">♛</span>
+    <span class="s-fx">골드 링 글로우 (강조형)</span>
+  </div>
+  <div class="row">
+    <div class="card-cell">
+      <div class="card-scene fx-crown">
+        <img class="card-img" src="https://assets.tcgdex.net/en/tcgp/A1/284/high.webp" draggable="false">
+      </div>
+      <div class="card-sub">A1 #284 · ♛</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

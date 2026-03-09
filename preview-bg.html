@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>테마 & 모달 배경 미리보기</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #080808;
+  color: #e0e0e0;
+  font-family: 'Noto Sans KR', system-ui, sans-serif;
+  padding: 36px 40px 80px;
+  line-height: 1.4;
+}
+h1  { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 40px; letter-spacing: -0.3px; }
+h2  { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: #555; margin-bottom: 20px; }
+.section { margin-bottom: 60px; }
+.row     { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+
+.col-label {
+  font-size: 12px; color: #888; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.badge-tag {
+  display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 10px;
+  background: rgba(233,69,96,0.18); color: #e94560; font-weight: 700;
+}
+
+/* ────────────────────────────────────────────────────
+   SITE PREVIEW (mini UI mockup)
+───────────────────────────────────────────────────── */
+.site-mock {
+  width: 310px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid;
+}
+.mock-header {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+.mock-logo  { width: 24px; height: 24px; background: #e94560; border-radius: 5px; flex-shrink: 0; }
+.mock-title { font-size: 12px; font-weight: 700; }
+.mock-search {
+  height: 26px; border-radius: 6px; margin: 8px 12px 0;
+  border-width: 1px; border-style: solid;
+}
+.mock-chips {
+  display: flex; gap: 5px; padding: 6px 12px 10px;
+}
+.mock-chip {
+  height: 20px; width: 44px; border-radius: 10px;
+  border-width: 1px; border-style: solid;
+}
+.mock-chip.on { background: #e94560; border-color: #e94560; }
+.mock-grid {
+  display: flex; gap: 7px; padding: 10px 12px 14px; flex-wrap: wrap;
+}
+.mock-card {
+  width: 82px; border-radius: 8px; overflow: hidden;
+  border-width: 1px; border-style: solid;
+}
+.mock-card img  { width: 100%; aspect-ratio: 63/88; object-fit: cover; display: block; }
+.mock-card-info { padding: 5px 6px 7px; }
+.mock-line-n    { height: 7px; border-radius: 3px; margin-bottom: 4px; width: 72%; }
+.mock-line-m    { height: 6px; border-radius: 3px; width: 48%; }
+
+.color-hint {
+  margin-top: 8px; font-size: 10px; color: #555;
+  font-family: 'Courier New', monospace; letter-spacing: 0.4px;
+}
+
+/* ────────────────────────────────────────────────────
+   MODAL PREVIEW
+───────────────────────────────────────────────────── */
+.modal-mock {
+  display: flex;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid;
+  width: 480px;
+}
+.modal-mock.narrow { width: 240px; }
+
+.ml {
+  width: 168px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px 12px;
+  position: relative;
+}
+.ml img { width: 132px; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.75); }
+
+.mr {
+  flex: 1; padding: 18px 16px;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.mr-title  { height: 16px; border-radius: 5px; width: 58%; }
+.mr-badges { display: flex; gap: 5px; }
+.mr-badge  { height: 20px; width: 52px; border-radius: 10px; border: 1px solid; }
+.mr-attack { height: 48px; border-radius: 7px; border-width: 1px; border-style: solid; }
+.mr-text   { height: 7px; border-radius: 3px; }
+
+/* narrow modal (type gradient samples) */
+.modal-mock.narrow .ml { width: 110px; }
+.modal-mock.narrow .ml img { width: 86px; }
+.modal-mock.narrow { width: 200px; }
+</style>
+</head>
+<body>
+
+<h1>테마 &amp; 모달 배경 미리보기</h1>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SECTION 1 : 다크 테마                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <h2>■ 다크 테마 — 3가지 옵션</h2>
+  <div class="row">
+
+    <!-- A: Neutral Grey -->
+    <div>
+      <div class="col-label">A — 뉴트럴 그레이 <span class="badge-tag">추천</span></div>
+      <div class="site-mock" style="background:#1a1a1a; border-color:#333;">
+        <div class="mock-header" style="background:#1a1a1a; border-bottom-color:#333;">
+          <div class="mock-logo"></div>
+          <span class="mock-title" style="color:#e8e8f0;">포켓몬 TCG Pocket</span>
+        </div>
+        <div class="mock-search" style="background:#0f0f0f; border-color:#333;"></div>
+        <div class="mock-chips">
+          <div class="mock-chip" style="background:transparent; border-color:#333;"></div>
+          <div class="mock-chip on"></div>
+          <div class="mock-chip" style="background:transparent; border-color:#333;"></div>
+          <div class="mock-chip" style="background:transparent; border-color:#333;"></div>
+        </div>
+        <div class="mock-grid" style="background:#0f0f0f;">
+          <div class="mock-card" style="background:#1a1a1a; border-color:#333;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#333;"></div>
+              <div class="mock-line-m" style="background:#2a2a2a;"></div>
+            </div>
+          </div>
+          <div class="mock-card" style="background:#1a1a1a; border-color:#333;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/227/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#333;"></div>
+              <div class="mock-line-m" style="background:#2a2a2a;"></div>
+            </div>
+          </div>
+          <div class="mock-card" style="background:#1a1a1a; border-color:#333;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/284/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#333;"></div>
+              <div class="mock-line-m" style="background:#2a2a2a;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="color-hint">surface #1a1a1a · border #333</div>
+    </div>
+
+    <!-- B: Deep Slate -->
+    <div>
+      <div class="col-label">B — 딥 슬레이트</div>
+      <div class="site-mock" style="background:#1c1c22; border-color:#2e2e3c;">
+        <div class="mock-header" style="background:#1c1c22; border-bottom-color:#2e2e3c;">
+          <div class="mock-logo"></div>
+          <span class="mock-title" style="color:#e8e8f0;">포켓몬 TCG Pocket</span>
+        </div>
+        <div class="mock-search" style="background:#0f0f11; border-color:#2e2e3c;"></div>
+        <div class="mock-chips">
+          <div class="mock-chip" style="background:transparent; border-color:#2e2e3c;"></div>
+          <div class="mock-chip on"></div>
+          <div class="mock-chip" style="background:transparent; border-color:#2e2e3c;"></div>
+          <div class="mock-chip" style="background:transparent; border-color:#2e2e3c;"></div>
+        </div>
+        <div class="mock-grid" style="background:#0f0f11;">
+          <div class="mock-card" style="background:#1c1c22; border-color:#2e2e3c;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#2e2e3c;"></div>
+              <div class="mock-line-m" style="background:#22222a;"></div>
+            </div>
+          </div>
+          <div class="mock-card" style="background:#1c1c22; border-color:#2e2e3c;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/227/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#2e2e3c;"></div>
+              <div class="mock-line-m" style="background:#22222a;"></div>
+            </div>
+          </div>
+          <div class="mock-card" style="background:#1c1c22; border-color:#2e2e3c;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/284/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#2e2e3c;"></div>
+              <div class="mock-line-m" style="background:#22222a;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="color-hint">surface #1c1c22 · border #2e2e3c</div>
+    </div>
+
+    <!-- C: Warming Dark -->
+    <div>
+      <div class="col-label">C — 워밍 다크</div>
+      <div class="site-mock" style="background:#1a1916; border-color:#302e2a;">
+        <div class="mock-header" style="background:#1a1916; border-bottom-color:#302e2a;">
+          <div class="mock-logo"></div>
+          <span class="mock-title" style="color:#f0ede8;">포켓몬 TCG Pocket</span>
+        </div>
+        <div class="mock-search" style="background:#0e0d0c; border-color:#302e2a;"></div>
+        <div class="mock-chips">
+          <div class="mock-chip" style="background:transparent; border-color:#302e2a;"></div>
+          <div class="mock-chip on"></div>
+          <div class="mock-chip" style="background:transparent; border-color:#302e2a;"></div>
+          <div class="mock-chip" style="background:transparent; border-color:#302e2a;"></div>
+        </div>
+        <div class="mock-grid" style="background:#0e0d0c;">
+          <div class="mock-card" style="background:#1a1916; border-color:#302e2a;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#302e2a;"></div>
+              <div class="mock-line-m" style="background:#201e1b;"></div>
+            </div>
+          </div>
+          <div class="mock-card" style="background:#1a1916; border-color:#302e2a;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/227/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#302e2a;"></div>
+              <div class="mock-line-m" style="background:#201e1b;"></div>
+            </div>
+          </div>
+          <div class="mock-card" style="background:#1a1916; border-color:#302e2a;">
+            <img src="https://assets.tcgdex.net/en/tcgp/A1/284/high.webp">
+            <div class="mock-card-info">
+              <div class="mock-line-n" style="background:#302e2a;"></div>
+              <div class="mock-line-m" style="background:#201e1b;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="color-hint">surface #1a1916 · border #302e2a</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SECTION 2 : 모달 좌측 배경                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <h2>■ 모달 좌측 배경 — 3가지 옵션 (A 테마 기준)</h2>
+  <div class="row">
+
+    <!-- A: Type Gradient -->
+    <div>
+      <div class="col-label">A — 타입 그라디언트 <span class="badge-tag">추천</span></div>
+      <div class="modal-mock" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#1e5c1e 0%,#0a1a0a 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;">
+          <div class="mr-title" style="background:#333;"></div>
+          <div class="mr-badges">
+            <div class="mr-badge" style="background:rgba(200,40,40,0.2); border-color:#c04444;"></div>
+            <div class="mr-badge" style="background:#222; border-color:#333;"></div>
+          </div>
+          <div class="mr-attack" style="background:#222; border-color:#333;"></div>
+          <div class="mr-attack" style="background:#222; border-color:#333;"></div>
+          <div class="mr-text" style="background:#2a2a2a; width:85%;"></div>
+          <div class="mr-text" style="background:#2a2a2a; width:60%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B: Unified -->
+    <div>
+      <div class="col-label">B — 우측과 동일 (통일감)</div>
+      <div class="modal-mock" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:#1a1a1a;">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;">
+          <div class="mr-title" style="background:#333;"></div>
+          <div class="mr-badges">
+            <div class="mr-badge" style="background:rgba(200,40,40,0.2); border-color:#c04444;"></div>
+            <div class="mr-badge" style="background:#222; border-color:#333;"></div>
+          </div>
+          <div class="mr-attack" style="background:#222; border-color:#333;"></div>
+          <div class="mr-attack" style="background:#222; border-color:#333;"></div>
+          <div class="mr-text" style="background:#2a2a2a; width:85%;"></div>
+          <div class="mr-text" style="background:#2a2a2a; width:60%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C: Pure dark -->
+    <div>
+      <div class="col-label">C — 순수 다크 (#0f0f0f)</div>
+      <div class="modal-mock" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:#0f0f0f;">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;">
+          <div class="mr-title" style="background:#333;"></div>
+          <div class="mr-badges">
+            <div class="mr-badge" style="background:rgba(200,40,40,0.2); border-color:#c04444;"></div>
+            <div class="mr-badge" style="background:#222; border-color:#333;"></div>
+          </div>
+          <div class="mr-attack" style="background:#222; border-color:#333;"></div>
+          <div class="mr-attack" style="background:#222; border-color:#333;"></div>
+          <div class="mr-text" style="background:#2a2a2a; width:85%;"></div>
+          <div class="mr-text" style="background:#2a2a2a; width:60%;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SECTION 3 : 타입별 그라디언트 샘플           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <h2>■ 타입별 그라디언트 — 색상 샘플 (A안 기준)</h2>
+  <div class="row">
+
+    <div>
+      <div class="col-label">풀</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#1e5c1e 0%,#0a1a0a 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">불꽃</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#5a2000 0%,#1a0800 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/284/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">물</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#003a8c 0%,#001230 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/227/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">번개</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#665200 0%,#1a1400 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">에스퍼</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#5c005c 0%,#1a001a 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/251/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">격투</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#5c2e00 0%,#1a0c00 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">악</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#1a1a3a 0%,#0a0a18 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">강철</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#2a3a47 0%,#0e1318 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">드래곤</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#003355 0%,#001020 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-label">무색</div>
+      <div class="modal-mock narrow" style="background:#1a1a1a; border-color:#333;">
+        <div class="ml" style="background:radial-gradient(ellipse at center,#2a2a2a 0%,#141414 60%,#0f0f0f 100%);">
+          <img src="https://assets.tcgdex.net/en/tcgp/A1/004/high.webp">
+        </div>
+        <div class="mr" style="background:#1a1a1a;"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

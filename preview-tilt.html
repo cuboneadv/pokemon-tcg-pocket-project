@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>틸트 이펙트 미리보기</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0f0f0f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    color: #e8e8f0;
+    padding: 40px 20px;
+    gap: 20px;
+  }
+
+  h2 { font-size: 13px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ── 스위처 ── */
+  .row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .label { font-size: 11px; color: #444; }
+
+  .sw-btn {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    color: #666;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .sw-btn.active, .sw-btn:hover {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+  }
+  .sw-btn.mode-btn.active { background: #2a4a8a; border-color: #3a5aaa; }
+
+  /* ── 카드 씬 ── */
+  .card-scene {
+    perspective: 900px;
+    width: 260px;
+    height: 364px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .card-wrap {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.08s ease-out;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .card-wrap.resetting {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  /* 글로스 오버레이 */
+  .card-gloss {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s;
+    mix-blend-mode: overlay;
+  }
+  .gloss-on .card-wrap:hover .card-gloss { opacity: 1; }
+
+  /* 다이나믹 그림자 */
+  .card-shadow {
+    position: absolute;
+    bottom: -24px;
+    left: 10%;
+    width: 80%;
+    height: 24px;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, transparent 70%);
+    filter: blur(8px);
+    transition: transform 0.08s ease-out;
+    pointer-events: none;
+  }
+  .card-wrap.resetting ~ .card-shadow {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  /* 그림자 off: 항상 노출, shadow-on일 때만 동적 이동 적용 */
+
+  /* ── 링 이펙트 (style.css에서 그대로) ── */
+  .fx-star1 { animation: ring-silver 2.5s ease-in-out infinite; }
+  @keyframes ring-silver {
+    0%,100% { box-shadow: 0 0 0 2px rgba(208,218,252,0.78), 0 0 0 5px rgba(185,200,245,0.18), 0 0 18px 6px rgba(185,200,245,0.20), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(232,238,255,0.92), 0 0 0 5px rgba(208,218,252,0.26), 0 0 18px 6px rgba(208,218,252,0.28), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+  .fx-star2 { animation: ring-rainbow 3s linear infinite; }
+  @keyframes ring-rainbow {
+    0%   { box-shadow: 0 0 0 2px rgba(255,155,185,0.92), 0 0 0 5px rgba(255,100,155,0.28), 0 0 18px 6px rgba(255,100,155,0.30), 0 10px 30px rgba(0,0,0,0.85); }
+    17%  { box-shadow: 0 0 0 2px rgba(255,205,130,0.92), 0 0 0 5px rgba(255,170,60,0.28),  0 0 18px 6px rgba(255,170,60,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    34%  { box-shadow: 0 0 0 2px rgba(120,225,185,0.92), 0 0 0 5px rgba(60,200,145,0.28),  0 0 18px 6px rgba(60,200,145,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    50%  { box-shadow: 0 0 0 2px rgba(110,205,255,0.92), 0 0 0 5px rgba(60,170,255,0.28),  0 0 18px 6px rgba(60,170,255,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    67%  { box-shadow: 0 0 0 2px rgba(175,135,255,0.92), 0 0 0 5px rgba(140,90,255,0.28),  0 0 18px 6px rgba(140,90,255,0.30),  0 10px 30px rgba(0,0,0,0.85); }
+    84%  { box-shadow: 0 0 0 2px rgba(255,160,210,0.92), 0 0 0 5px rgba(255,110,185,0.28), 0 0 18px 6px rgba(255,110,185,0.30), 0 10px 30px rgba(0,0,0,0.85); }
+    100% { box-shadow: 0 0 0 2px rgba(255,155,185,0.92), 0 0 0 5px rgba(255,100,155,0.28), 0 0 18px 6px rgba(255,100,155,0.30), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+  .fx-star3 { animation: ring-star3 3s ease-in-out infinite; }
+  @keyframes ring-star3 {
+    0%,100% { box-shadow: 0 0 0 2px rgba(100,75,220,0.82),  0 0 0 5px rgba(130,100,240,0.20), 0 0 18px 6px rgba(130,100,240,0.22), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(195,175,255,0.92), 0 0 0 5px rgba(160,135,255,0.30), 0 0 18px 6px rgba(195,175,255,0.34), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+  .fx-crown { animation: ring-gold 2s ease-in-out infinite; }
+  @keyframes ring-gold {
+    0%,100% { box-shadow: 0 0 0 2px rgba(255,200,40,0.88), 0 0 16px 5px rgba(210,155,15,0.35), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 3px rgba(255,225,90,1.00), 0 0 0 6px rgba(230,175,30,0.28), 0 0 28px 12px rgba(210,160,20,0.52), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+  .fx-type-fire { animation: ring-type-fire 3s ease-in-out infinite; }
+  @keyframes ring-type-fire {
+    0%,100% { box-shadow: 0 0 0 2px rgba(232,80,48,0.82),  0 0 0 5px rgba(232,80,48,0.20), 0 0 18px 6px rgba(232,80,48,0.22),  0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(255,120,80,0.92), 0 0 0 5px rgba(232,80,48,0.30), 0 0 18px 6px rgba(255,120,80,0.34), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+  .fx-type-water { animation: ring-type-water 3s ease-in-out infinite; }
+  @keyframes ring-type-water {
+    0%,100% { box-shadow: 0 0 0 2px rgba(48,144,224,0.82), 0 0 0 5px rgba(48,144,224,0.20), 0 0 18px 6px rgba(48,144,224,0.22), 0 10px 30px rgba(0,0,0,0.85); }
+    50%     { box-shadow: 0 0 0 2px rgba(90,185,255,0.92), 0 0 0 5px rgba(48,144,224,0.30), 0 0 18px 6px rgba(90,185,255,0.34), 0 10px 30px rgba(0,0,0,0.85); }
+  }
+
+  /* ── 설명 텍스트 ── */
+  .desc {
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+    line-height: 1.7;
+  }
+  .desc em { color: #888; font-style: normal; }
+</style>
+</head>
+<body>
+
+<h2>틸트 이펙트 미리보기</h2>
+
+<!-- 레어도 선택 -->
+<div class="row">
+  <span class="label">레어도</span>
+  <button class="sw-btn" onclick="setRarity('',       '1', this)">없음</button>
+  <button class="sw-btn" onclick="setRarity('fx-star1','1', this)">☆</button>
+  <button class="sw-btn active" onclick="setRarity('fx-star2','259', this)">☆☆</button>
+  <button class="sw-btn" onclick="setRarity('fx-star3','264', this)">☆☆☆</button>
+  <button class="sw-btn" onclick="setRarity('fx-crown','285', this)">♛</button>
+  <button class="sw-btn" onclick="setRarity('fx-type-fire','045', this)">◇◇◇◇ 불꽃</button>
+  <button class="sw-btn" onclick="setRarity('fx-type-water','007', this)">◇◇◇◇ 물</button>
+</div>
+
+<!-- 모드 선택 -->
+<div class="row">
+  <span class="label">모드</span>
+  <button class="mode-btn sw-btn" onclick="setMode('A', this)">A — 틸트만</button>
+  <button class="mode-btn sw-btn active" onclick="setMode('B', this)">B — 틸트 + 글로스</button>
+  <button class="mode-btn sw-btn" onclick="setMode('C', this)">C — 틸트 + 글로스 + 그림자</button>
+</div>
+
+<!-- 카드 -->
+<div id="scene-wrap" style="position:relative; overflow:visible;">
+  <div class="card-scene gloss-on" id="card-scene">
+    <div class="card-wrap fx-star2" id="card-wrap">
+      <img class="card-img" id="card-img"
+        src="https://assets.tcgdex.net/ko/tcgp/A1/259/high.webp"
+        onerror="this.src='https://assets.tcgdex.net/en/tcgp/A1/259/high.webp'"
+        alt="카드" draggable="false"/>
+      <div class="card-gloss" id="card-gloss"></div>
+    </div>
+    <div class="card-shadow" id="card-shadow"></div>
+  </div>
+</div>
+
+<p class="desc">
+  <em>마우스를 카드 위에 올려 기울여보세요.</em><br>
+  링 이펙트는 카드와 함께 3D로 기울어집니다.
+</p>
+
+<script>
+  const MAX_TILT = 14;
+  const wrap   = document.getElementById('card-wrap');
+  const gloss  = document.getElementById('card-gloss');
+  const shadow = document.getElementById('card-shadow');
+  const scene  = document.getElementById('card-scene');
+  const img    = document.getElementById('card-img');
+
+  // 틸트 이벤트
+  wrap.addEventListener('mousemove', e => {
+    const rect = wrap.getBoundingClientRect();
+    const dx = (e.clientX - (rect.left + rect.width  / 2)) / (rect.width  / 2);
+    const dy = (e.clientY - (rect.top  + rect.height / 2)) / (rect.height / 2);
+
+    wrap.classList.remove('resetting');
+    wrap.style.transform = `rotateX(${-dy * MAX_TILT}deg) rotateY(${dx * MAX_TILT}deg)`;
+
+    // 글로스
+    const gx = ((e.clientX - rect.left) / rect.width  * 100).toFixed(1);
+    const gy = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1);
+    gloss.style.background =
+      `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 38%, transparent 65%)`;
+
+    // 다이나믹 그림자 (C안)
+    if (shadowMode) {
+      shadow.style.transform = `translateX(${dx * 14}px) scaleX(${1 - Math.abs(dx) * 0.15})`;
+    }
+  });
+
+  wrap.addEventListener('mouseleave', () => {
+    wrap.classList.add('resetting');
+    wrap.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    gloss.style.background = '';
+    if (shadowMode) shadow.style.transform = '';
+  });
+
+  // ── 레어도 전환 ──
+  const ALL_FX = ['fx-star1','fx-star2','fx-star3','fx-crown','fx-type-fire','fx-type-water'];
+  function setRarity(cls, localId, btn) {
+    ALL_FX.forEach(c => wrap.classList.remove(c));
+    if (cls) wrap.classList.add(cls);
+    img.src = `https://assets.tcgdex.net/ko/tcgp/A1/${localId}/high.webp`;
+    img.onerror = () => { img.src = `https://assets.tcgdex.net/en/tcgp/A1/${localId}/high.webp`; img.onerror = null; };
+    document.querySelectorAll('.sw-btn:not(.mode-btn)').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // ── 모드 전환 ──
+  let shadowMode = false;
+  function setMode(mode, btn) {
+    shadowMode = false;
+    shadow.style.transform = '';
+    if (mode === 'A') {
+      scene.classList.remove('gloss-on');
+      shadow.style.opacity = '0';
+    } else if (mode === 'B') {
+      scene.classList.add('gloss-on');
+      shadow.style.opacity = '0';
+    } else {
+      scene.classList.add('gloss-on');
+      shadow.style.opacity = '1';
+      shadowMode = true;
+    }
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  // 초기 B모드
+  shadow.style.opacity = '0';
+</script>
+
+</body>
+</html>
